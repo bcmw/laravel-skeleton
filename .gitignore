@@ -1,0 +1,15 @@
+/vendor
+/node_modules
+.env
+.sass-cache
+.idea/workspace.xml
+*.sublime-workspace
+*.psd
+!composer.lock
+composer.phar
+error_log
+.sublime-grunt-cache
+_ide_helper.php
+sftp-config.json
+.DS_Store
+Thumbs.db
