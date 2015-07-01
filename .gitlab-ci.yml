@@ -1,0 +1,10 @@
+# Standard GitLab CI build spec file
+
+Standard Build:
+  script:
+  - build-standard
+  tags:
+  - standard-build
+  except:
+  - tags
+  - /^env/.*$/
