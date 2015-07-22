@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Inspiring;
+
 class DefaultController extends Controller
 {
 	/*
@@ -32,6 +34,6 @@ class DefaultController extends Controller
 	 */
 	public function index()
 	{
-		return view('index');
+		return view('index', ['quote' => Inspiring::quote()]);
 	}
 }
