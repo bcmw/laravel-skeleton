@@ -1,4 +1,4 @@
-<?php namespace App\Services;
+<?php namespace App\Utils;
 
 use Illuminate\Validation\Validator as BaseValidator;
 

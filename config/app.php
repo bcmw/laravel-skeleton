@@ -143,11 +143,12 @@ return [
         App\Providers\AppServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\ValidatorServiceProvider::class,
 
 		/*
-		 * 3rd Party Service Providers
+		 * 3rd Party Service Providers...
 		 */
-		'TwigBridge\ServiceProvider',
+		TwigBridge\ServiceProvider::class,
 
     ],
 

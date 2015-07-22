@@ -1,7 +1,9 @@
-<?php namespace App\Http\Controllers;
+<?php
 
-class DefaultController extends Controller {
+namespace App\Http\Controllers;
 
+class DefaultController extends Controller
+{
 	/*
 	|--------------------------------------------------------------------------
 	| Welcome Controller
@@ -32,5 +34,4 @@ class DefaultController extends Controller {
 	{
 		return view('index');
 	}
-
 }
