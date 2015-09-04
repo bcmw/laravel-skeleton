@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Inspiring;
 
-class Default extends Controller
+class Base extends Controller
 {
 	/*
 	|--------------------------------------------------------------------------

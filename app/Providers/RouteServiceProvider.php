@@ -38,7 +38,7 @@ class RouteServiceProvider extends ServiceProvider
     public function map(Router $router)
     {
         $router->group(['namespace' => $this->namespace], function ($router) {
-            $router->get('/', 'Default@index');
+            $router->get('/', 'Base@index');
         });
     }
 }
