@@ -27,7 +27,7 @@ class Kernel extends HttpKernel
 		'session.start'  => \Illuminate\Session\Middleware\StartSession::class,
 		'session.errors' => \Illuminate\View\Middleware\ShareErrorsFromSession::class,
 		'cors'           => \App\Http\Middleware\CORS::class,
-		'csrf'           => \App\Http\Middleware\VerifyCsrfToken::class,
+		'csrf'           => \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
 		'auth.basic'     => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
 		'auth'           => \App\Http\Middleware\Authenticate::class,
 		'guest'          => \App\Http\Middleware\RedirectIfAuthenticated::class,
