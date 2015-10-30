@@ -36,6 +36,7 @@ _ide_helper.php
 storage/testing.sqlite
 Homestead.yaml
 Homestead.json
+storage/framework/schedule-*
 
 # env stuff
 /.env
