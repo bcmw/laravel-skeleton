@@ -39,7 +39,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'America/Chicago',
 
     /*
     |--------------------------------------------------------------------------
@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'key' => env('APP_KEY', 'SomeRandomString'),
+    'key' => env('APP_KEY', 'SomeRandomStringSomeRandomStrings'),
 
     'cipher' => 'AES-256-CBC',
 
@@ -138,6 +138,15 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
+         * 3rd Party Service Providers...
+         */
+        TwigBridge\ServiceProvider::class,
+        Bluechip\Twig\Support\Laravel\TwigHelpersServiceProvider::class,
+        Bluechip\Laravel\Providers\LaravelServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        Clockwork\Support\Laravel\ClockworkServiceProvider::class,
+
+        /*
          * Application Service Providers...
          */
         App\Providers\AppServiceProvider::class,
@@ -145,11 +154,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\ValidatorServiceProvider::class,
-
-		/*
-		 * 3rd Party Service Providers...
-		 */
-		TwigBridge\ServiceProvider::class,
 
     ],
 
@@ -199,6 +203,8 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
+
+        'Twig'      => TwigBridge\Facade\Twig::class,
 
     ],
 

@@ -1,0 +1,17 @@
+{
+  "name": "laravel-skeleton",
+  "version": "1.0.0",
+  "description": "Blue Chip Laravel Skeleton",
+  "main": "public/index.php",
+  "repository": {
+    "type": "git",
+    "url": "git@git.bluechipdigital.com:toolbox/laravel-skeleton.git"
+  },
+  "dependencies": {
+    "bourbon": "~4.2.6",
+    "neat": "~1.7.2",
+    "jquery": "~2.1.4",
+    "loadCSS": "https://github.com/filamentgroup/loadCSS.git#0.2.2",
+    "loadJS": "https://github.com/filamentgroup/loadJS.git#0.2.1"
+  }
+}

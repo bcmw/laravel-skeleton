@@ -1,13 +1,22 @@
 {
-    "name": "laravel/laravel",
-    "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
-    "license": "MIT",
     "type": "project",
+    "name": "blue-chip/laravel-skeleton",
+    "description": "Blue Chip Laravel Skeleton.",
+    "keywords": ["skeleton", "laravel", "blue chip"],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://composer.bluechipdigital.com/satis"
+        }
+    ],
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
-		"rcrowe/twigbridge": "0.8.x@dev"
+		"rcrowe/twigbridge": "0.8.x@dev",
+        "blue-chip/twig-helpers": "1.*",
+        "blue-chip/laravel-helpers": "1.*",
+        "itsgoingd/clockwork": "1.*",
+        "barryvdh/laravel-ide-helper": "^2.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -1,0 +1,4 @@
+storage/logs/laravel.log
+storage/views
+bootstrap/cache/compiled.php
+bootstrap/cache/services.json

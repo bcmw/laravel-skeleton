@@ -2,7 +2,21 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\CORS;
+use App\Http\Middleware\VerifyCsrfToken;
+use Bluechip\Laravel\Middleware\DevPasswordProtect;
+use Bluechip\Laravel\Middleware\GetWall;
+use Bluechip\Laravel\Middleware\RedirectIfAuthenticated;
+use Bluechip\Laravel\Middleware\Secure;
+use Clockwork\Support\Laravel\ClockworkMiddleware;
+use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class Kernel extends HttpKernel
 {
@@ -12,24 +26,27 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
-		\App\Http\Middleware\Secure::class,
+        CheckForMaintenanceMode::class,    // check for maintenance mode flag
+        // Secure::class,                  // force requests to secure endpoint
+        DevPasswordProtect::class,         // password-protection for development
+        EncryptCookies::class,             // encrypt cookies
+        AddQueuedCookiesToResponse::class, // send set-cookie header
+        StartSession::class,               // start session
+        ShareErrorsFromSession::class,     // add errors object from session to all views
+        ClockworkMiddleware::class,        // clockwork debugging middleware
     ];
 
     /**
      * The application's route middleware.
-	 *
-	 * @var array
-	 */
+     *
+     * @var array
+     */
     protected $routeMiddleware = [
-		'cookie.encrypt' => \Illuminate\Cookie\Middleware\EncryptCookies::class,
-		'cookie.queue'   => \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-		'session.start'  => \Illuminate\Session\Middleware\StartSession::class,
-		'session.errors' => \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-		'cors'           => \App\Http\Middleware\CORS::class,
-		'csrf'           => \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
-		'auth.basic'     => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-		'auth'           => \App\Http\Middleware\Authenticate::class,
-		'guest'          => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'auth'       => Authenticate::class,              // redirect if the user is not logged in
+        'auth.basic' => AuthenticateWithBasicAuth::class, // basic auth if the user is not logged in
+        'cors'       => CORS::class,                      // headers to cors requests
+        'csrf'       => VerifyCsrfToken::class,           // csrf protection
+        'guest'      => RedirectIfAuthenticated::class,   // redirect if the user is logged in
+        'getwall'    => GetWall::class,                   // protect a route with a query string parameter
     ];
 }
