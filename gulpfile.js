@@ -18,9 +18,11 @@ var options = {
 // BASE PATHS //
 ////////////////
 var paths = {
-  bower_dir: 'bower_components',
   base:      {
-    src:  'resources/assets',
+    bower: 'bower_components',
+    src:   'resources/assets',
+    build: 'resources/assets/build',
+
     dest: {
       main:     'public/assets',
       critical: 'resources/views/_assets'
@@ -39,64 +41,46 @@ var paths = {
   options.production = cli_args.env === 'production';
 
   if (fs.existsSync('.bowerrc')) {
-    paths.bower_dir = require('./.bowerrc').directory || paths.bower_dir;
+    paths.base.bower = require('./.bowerrc').directory || paths.base.bower;
   }
 
   //////////////////
   // SOURCE PATHS //
   //////////////////
-  paths.src_paths = {
+  paths.src = {
     sass: {
       critical: [
-        paths.base.src + '/sass/critical/**/*.scss',
-        paths.base.src + '/admin/sass/critical/**/*.scss'
+        paths.base.src + '/sass/critical/**/*.scss'
       ],
       main:     [
-        paths.base.src + '/sass/main/**/*.scss',
-        paths.base.src + '/admin/sass/main/**/*.scss'
+        paths.base.src + '/sass/main/**/*.scss'
       ]
     },
     js:   {
       critical: [
-        paths.base.src + '/js/critical/**/*.js',
-        paths.base.src + '/admin/js/critical/**/*.js'
+        paths.base.src + '/js/critical/**/*.js'
       ],
       main:     [
-        paths.base.src + '/js/main/**/*.js',
-        paths.base.src + '/admin/js/main/**/*.js'
+        paths.base.src + '/js/main/**/*.js'
       ]
     },
     img:  [
-      paths.base.src + '/img/**/*.{png,jpg,jpeg,gif,svg}',
-      paths.base.src + '/admin/img/**/*.{png,jpg,jpeg,gif,svg}'
-    ],
-    font: [
-      paths.base.src + '/font/**'
+      paths.base.src + '/img/**/*.{png,jpg,jpeg,gif,svg}'
     ]
   };
 
-  ///////////////////////
-  // DESTINATION PATHS //
-  ///////////////////////
-  paths.dest_paths = {
-    sass:   {
-      critical: paths.base.dest.critical,
-      main:     paths.base.dest.main + ''
-    },
-    js:     {
-      critical: paths.base.dest.critical,
-      main:     paths.base.dest.main + ''
-    },
-    img:    paths.base.dest.main,
-    font:   paths.base.dest.main + '/font',
-    jquery: paths.base.dest.main + '/common/js/jquery',
-    build:  paths.base.src + '/build'
+  ////////////////
+  // COPY TASKS //
+  ////////////////
+  paths.copy = {
+    'fonts': {src: paths.base.src + '/font/**',
+              dest: paths.base.dest.main + '/font'}
   };
 
   /////////////////////
   // BOWER LIB PATHS //
   /////////////////////
-  paths.bower_libs = {
+  paths.bower = {
     sass: {
       base: [
         'bourbon/app/assets/stylesheets/bourbon',
@@ -120,18 +104,16 @@ var paths = {
       ]
     },
     copy: {
-      'jquery':        {src: 'jquery/dist/**',
-                        dest: paths.dest_paths.jquery}
+      'jquery': {src: 'jquery/dist/**',
+                 dest: paths.base.dest.main + '/common/js/jquery'}
     }
   };
 
   // ignore partials
-  paths.src_paths.sass.critical.push('!**/_*.scss');
-  paths.src_paths.sass.main.push('!**/_*.scss');
-  paths.src_paths.js.critical.push('!**/_*.js');
-  paths.src_paths.js.main.push('!**/_*.js');
-  paths.src_paths.font.push('!**/.git*');
-  // paths.src_paths.img.push('!**/.git*');
+  paths.src.sass.critical.push('!**/_*.scss');
+  paths.src.sass.main.push('!**/_*.scss');
+  paths.src.js.critical.push('!**/_*.js');
+  paths.src.js.main.push('!**/_*.js');
 })();
 
 ///////////
@@ -139,11 +121,11 @@ var paths = {
 ///////////
 var utils = {
   ensureBuildDir: function() {
-    if (!fs.existsSync(paths.dest_paths.build)) fs.mkdirSync(paths.dest_paths.build);
+    if (!fs.existsSync(paths.base.build)) fs.mkdirSync(paths.base.build);
   },
 
   buildFilePath: function(name) {
-    return paths.dest_paths.build + '/' + name;
+    return paths.base.build + '/' + name;
   },
 
   isBuildFileClean: function(name) {
@@ -178,7 +160,7 @@ var utils = {
       } else {
         lines[q] += '';
         if (!lines[q].match(new RegExp('\\.' + ext + '$'))) lines[q] += '.' + ext;
-        contents.push(formatter('../../../' + paths.bower_dir + '/' + lines[q]));
+        contents.push(formatter('../../../' + paths.base.bower + '/' + lines[q]));
       }
     }
 
@@ -225,16 +207,16 @@ var utils = {
 gulp.task('bower:copy', function(cb) {
   var tasks = [];
 
-  for (var key in paths.bower_libs.copy) {
-    if (!paths.bower_libs.copy.hasOwnProperty(key)) continue;
+  for (var key in paths.bower.copy) {
+    if (!paths.bower.copy.hasOwnProperty(key)) continue;
 
     gulp.task('bower:copy:' + key, (function (key) { return function () {
-      var lib = paths.bower_libs.copy[key];
+      var lib = paths.bower.copy[key];
 
       var src = lib.src;
       if (typeof src === 'string') src = [src];
       for (var q = 0; q < src.length; q++) {
-        src[q] = paths.bower_dir + '/' + src[q];
+        src[q] = paths.base.bower + '/' + src[q];
       }
 
       return gulp.src(src).pipe($.newer(lib.dest)).pipe(gulp.dest(lib.dest));
@@ -255,11 +237,11 @@ gulp.task('bower:copy', function(cb) {
 gulp.task('bower:sass', function(cb) {
   var tasks = [];
 
-  for (var key in paths.bower_libs.sass) {
-    if (!paths.bower_libs.sass.hasOwnProperty(key)) continue;
+  for (var key in paths.bower.sass) {
+    if (!paths.bower.sass.hasOwnProperty(key)) continue;
 
     gulp.task('bower:sass:' + key, (function (key) { return function () {
-      utils.makeBowerBuildFile(key, 'scss', paths.bower_libs.sass[key], function (path) {
+      utils.makeBowerBuildFile(key, 'scss', paths.bower.sass[key], function (path) {
         return '@import "' + path + '";';
       });
     };})(key));
@@ -279,11 +261,11 @@ gulp.task('bower:sass', function(cb) {
 gulp.task('bower:js', function(cb) {
   var tasks = [];
 
-  for (var key in paths.bower_libs.js) {
-    if (!paths.bower_libs.js.hasOwnProperty(key)) continue;
+  for (var key in paths.bower.js) {
+    if (!paths.bower.js.hasOwnProperty(key)) continue;
 
     gulp.task('bower:js:' + key, (function (key) { return function () {
-      utils.makeBowerBuildFile(key, 'js', paths.bower_libs.js[key], function (path) {
+      utils.makeBowerBuildFile(key, 'js', paths.bower.js[key], function (path) {
         return '//= include ' + path;
       });
     };})(key));
@@ -301,26 +283,26 @@ gulp.task('bower:js', function(cb) {
  * Creates resources/build/_bower_versions.js
  */
 gulp.task('bower:versions', function() {
-  return gulp.src(paths.bower_dir + '/*/.bower.json')
+  return gulp.src(paths.base.bower + '/*/.bower.json')
       .pipe($.bowerVersions({variable: 'BowerComponents'}))
-      .pipe(gulp.dest(paths.dest_paths.build + '/_bower_versions.js'));
+      .pipe(gulp.dest(paths.base.build + '/_bower_versions.js'));
 });
 
 /**
  * Copies .css files to .scss files in bower components so they can be imported in sass
  */
 gulp.task('bower:sass:css_to_scss', function() {
-  return gulp.src([paths.bower_dir + '/**/*.css', '!' + paths.bower_dir + '/**/*.min.css'], {base: paths.bower_dir})
-      .pipe($.newer({dest: paths.bower_dir, ext: '.scss'}))
+  return gulp.src([paths.base.bower + '/**/*.css', '!' + paths.base.bower + '/**/*.min.css'], {base: paths.base.bower})
+      .pipe($.newer({dest: paths.base.bower, ext: '.scss'}))
       .pipe($.rename({extname: '.scss'}))
-      .pipe(gulp.dest(paths.bower_dir));
+      .pipe(gulp.dest(paths.base.bower));
 });
 
 /**
  * Compiles critical sass stylesheets
  */
 gulp.task('sass:critical', function() {
-  return gulp.src(paths.src_paths.sass.critical, {base: paths.base.src})
+  return gulp.src(paths.src.sass.critical, {base: paths.base.src})
       .pipe($.sass({
         outputStyle: options.production ? 'compressed' : 'nested'
       }))
@@ -330,7 +312,7 @@ gulp.task('sass:critical', function() {
         path.basename += '_css';
         path.extname = '.twig';
       }))
-      .pipe(gulp.dest(paths.dest_paths.sass.critical))
+      .pipe(gulp.dest(paths.base.dest.critical))
       .pipe($.size({title: 'critical css'}));
 });
 
@@ -338,7 +320,7 @@ gulp.task('sass:critical', function() {
  * Compiles async sass stylesheets
  */
 gulp.task('sass:main', function() {
-  return gulp.src(paths.src_paths.sass.main, {base: paths.base.src})
+  return gulp.src(paths.src.sass.main, {base: paths.base.src})
       .pipe($.sourcemaps.init())
       .pipe($.sass({
         outputStyle: options.production ? 'compressed' : 'nested'
@@ -353,7 +335,7 @@ gulp.task('sass:main', function() {
           return file.path.replace(/^resources/, '').substr(1).replace(/[^\/]+/ig, '..') + '/../resources/';
         }
       })))
-      .pipe(gulp.dest(paths.dest_paths.sass.main))
+      .pipe(gulp.dest(paths.base.dest.main))
       .pipe($.size({title: 'main css'}));
 });
 
@@ -361,7 +343,7 @@ gulp.task('sass:main', function() {
  * Compiles critical js scripts
  */
 gulp.task('js:critical', function() {
-  return gulp.src(paths.src_paths.js.critical, {base: paths.base.src})
+  return gulp.src(paths.src.js.critical, {base: paths.base.src})
       .pipe($.cache($.include()))
       .pipe($.cache($.uglify({
         mangle: !!options.production
@@ -372,7 +354,7 @@ gulp.task('js:critical', function() {
         path.basename += '_js';
         path.extname = '.twig';
       }))
-      .pipe(gulp.dest(paths.dest_paths.js.critical))
+      .pipe(gulp.dest(paths.base.dest.critical))
       .pipe($.size({title: 'critical js'}));
 });
 
@@ -380,7 +362,7 @@ gulp.task('js:critical', function() {
  * Compiles async js scripts
  */
 gulp.task('js:main', function() {
-  return gulp.src(paths.src_paths.js.main, {base: paths.base.src})
+  return gulp.src(paths.src.js.main, {base: paths.base.src})
       .pipe($.sourcemaps.init())
       .pipe($.cache($.include()))
       .pipe($.cache($.uglify({
@@ -396,7 +378,7 @@ gulp.task('js:main', function() {
           return file.path.replace(/^resources/, '').substr(1).replace(/[^\/]+/ig, '..') + '/../resources/';
         }
       })))
-      .pipe(gulp.dest(paths.dest_paths.js.main))
+      .pipe(gulp.dest(paths.base.dest.main))
       .pipe($.size({title: 'main js'}));
 });
 
@@ -406,33 +388,49 @@ gulp.task('js:main', function() {
  * Creates resources/build/modernizr.js
  */
 gulp.task('modernizr', function() {
-  return gulp.src(['resources/**/*.scss', 'resources/**/*.js', '!resources/build/modernizr.js'])
-      .pipe($.modernizr('modernizr.js', {
+  return gulp.src([paths.base.src + '/**/*.scss', paths.base.src + '/**/*.js', '!' + paths.base.src + '/build/_modernizr.js'])
+      .pipe($.modernizr('_modernizr.js', {
         paths: ['setClasses', 'addTest', 'html5printshiv', 'testProp', 'fnBind']
       }))
       .pipe(gulp.dest(paths.base.src + '/build'));
 });
 
 /**
- * Copies fonts to their destination
+ * Copies bower components' public assets to publicly-accessible paths
  */
-gulp.task('fonts:copy', function() {
-  return gulp.src(paths.src_paths.font)
-      .pipe($.newer(paths.dest_paths.font))
-      .pipe(gulp.dest(paths.dest_paths.font))
-      .pipe($.size({title: 'fonts'}));
+gulp.task('copy', function(cb) {
+  var tasks = [];
+
+  for (var key in paths.copy) {
+    if (!paths.copy.hasOwnProperty(key)) continue;
+
+    gulp.task('copy:' + key, (function (key) { return function () {
+      var task = paths.copy[key];
+
+      var src = task.src;
+      if (typeof src === 'string') src = [src];
+      src.push('!**/.git*');
+
+      return gulp.src(src).pipe($.newer(task.dest)).pipe(gulp.dest(task.dest));
+    };})(key));
+
+    tasks.push('copy:' + key)
+  }
+
+  if (tasks.length) run(tasks, cb);
+  else if (cb) cb();
 });
 
 /**
  * Compresses images
  */
 gulp.task('img', function() {
-  return gulp.src(paths.src_paths.img, {base: paths.base.src})
+  return gulp.src(paths.src.img, {base: paths.base.src})
       .pipe($.cache($.imagemin({
         progressive: true,
         interlaced:  true
       })))
-      .pipe(gulp.dest(paths.dest_paths.img))
+      .pipe(gulp.dest(paths.base.dest.main))
       .pipe($.size({title: 'images'}));
 });
 
@@ -461,16 +459,20 @@ gulp.task('clean:cache', function (cb) {
  * Cleans all built artifacts
  */
 gulp.task('clean:files', function () {
-  return del([
+  var cleanPaths = [
     '.tmp',
-    paths.dest_paths.sass.critical,
-    paths.dest_paths.sass.main,
-    paths.dest_paths.js.critical,
-    paths.dest_paths.js.main,
-    paths.dest_paths.img,
-    paths.dest_paths.font,
-    paths.dest_paths.build
-  ], {dot: true});
+    paths.base.dest.critical,
+    paths.base.dest.main,
+    paths.base.build
+  ];
+
+  for (var key in paths.copy) {
+    if (!paths.copy.hasOwnProperty(key)) continue;
+
+    cleanPaths.push(paths.copy[key].dest);
+  }
+
+  return del(cleanPaths, {dot: true});
 });
 
 /**
@@ -488,7 +490,7 @@ gulp.task('compile', function(cb) {
 });
 
 gulp.task('default', options.production ? ['clean'] : [], function(cb) {
-  run(['fonts:copy', 'bower:copy', 'img', 'compile'], cb);
+  run(['copy', 'bower:copy', 'img', 'compile'], cb);
 });
 
 gulp.task('watch', ['default'], function() {

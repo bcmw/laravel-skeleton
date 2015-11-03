@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'key' => env('APP_KEY', 'SomeRandomStringSomeRandomStrings'),
+    'key' => env('APP_KEY', 'SomeRandomStringSomeRandomString'),
 
     'cipher' => 'AES-256-CBC',
 
@@ -142,7 +142,7 @@ return [
          */
         TwigBridge\ServiceProvider::class,
         Bluechip\Twig\Support\Laravel\TwigHelpersServiceProvider::class,
-        Bluechip\Laravel\Providers\LaravelServiceProvider::class,
+        Bluechip\Laravel\Providers\LaravelHelpersServiceProvider::class,
         Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
         Clockwork\Support\Laravel\ClockworkServiceProvider::class,
 

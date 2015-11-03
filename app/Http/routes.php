@@ -1,3 +1,3 @@
 <?php
 
-// Route::get('/', 'HomeController@showHome');
+Route::get('/', 'HomeController@showHome');
