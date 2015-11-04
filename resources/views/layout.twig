@@ -90,7 +90,7 @@
         var loadMainJS = function() { loadJS('{{ asset('assets/js/scripts.min.js') }}'); };
         var jqe = loadJS('//cdnjs.cloudflare.com/ajax/libs/jquery/' + BowerComponents.jquery + '/jquery.min.js', loadMainJS);
         jqe.onerror = function() {
-          loadJS('{{ asset('assets/js/jquery/jquery.min.js') }}', loadMainJS);
+          loadJS('{{ asset('assets/common/js/jquery/jquery.min.js') }}', loadMainJS);
         };
       })();
     </script>
