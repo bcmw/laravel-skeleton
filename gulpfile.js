@@ -303,10 +303,12 @@ gulp.task('bower:sass:css_to_scss', function() {
  */
 gulp.task('sass:critical', function() {
   return gulp.src(paths.src.sass.critical, {base: paths.base.src})
+      .pipe($.sourcemaps.init())
       .pipe($.sass({
         outputStyle: options.production ? 'compressed' : 'nested'
       }))
       .on('error', utils.errorCallback('SASS'))
+      .pipe($.if(!options.production, $.sourcemaps.write({sourceRoot: '/' + paths.base.src})))
       .pipe($.rename(function (path) {
         path.dirname = path.dirname.replace(/(\/|^)sass(\/|$)/, '/css/').replace(/(\/|^)critical(\/|$)/, '/');
         path.basename += '_css';
