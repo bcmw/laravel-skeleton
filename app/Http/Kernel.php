@@ -9,7 +9,6 @@ use Bluechip\Laravel\Middleware\DevPasswordProtect;
 use Bluechip\Laravel\Middleware\GetWall;
 use Bluechip\Laravel\Middleware\RedirectIfAuthenticated;
 use Bluechip\Laravel\Middleware\Secure;
-use Clockwork\Support\Laravel\ClockworkMiddleware;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -33,7 +32,6 @@ class Kernel extends HttpKernel
         AddQueuedCookiesToResponse::class, // send set-cookie header
         StartSession::class,               // start session
         ShareErrorsFromSession::class,     // add errors object from session to all views
-        ClockworkMiddleware::class,        // clockwork debugging middleware
     ];
 
     /**

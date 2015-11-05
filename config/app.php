@@ -143,8 +143,6 @@ return [
         TwigBridge\ServiceProvider::class,
         Bluechip\Twig\Support\Laravel\TwigHelpersServiceProvider::class,
         Bluechip\Laravel\Providers\LaravelHelpersServiceProvider::class,
-        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
-        Clockwork\Support\Laravel\ClockworkServiceProvider::class,
 
         /*
          * Application Service Providers...
