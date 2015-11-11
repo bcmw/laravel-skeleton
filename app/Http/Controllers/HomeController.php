@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Http\Controllers;
 
-class HomeController extends BaseController
+use App\Http\Controllers\Controller;
+
+class HomeController extends Controller
 {
     public function showHome()
     {
