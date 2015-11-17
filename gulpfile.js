@@ -5,7 +5,8 @@ var gulp   = require('gulp'),
     del    = require('del'),
     notify = require('gulp-notify'),
     run    = require('run-sequence'),
-    fs     = require('fs');
+    fs     = require('fs'),
+    bs     = require('browser-sync').create();
 
 ////////////////////
 // GLOBAL OPTIONS //
