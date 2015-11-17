@@ -20,8 +20,8 @@ var options = {
 var paths = {
   base:      {
     bower: 'bower_components',
-    src:   'resources/assets',
-    build: 'resources/assets/build',
+    src:   'resources',
+    build: 'resources/build',
 
     dest: {
       main:     'public/assets',
@@ -160,7 +160,7 @@ var utils = {
       } else {
         lines[q] += '';
         if (!lines[q].match(new RegExp('\\.' + ext + '$'))) lines[q] += '.' + ext;
-        contents.push(formatter('../../../' + paths.base.bower + '/' + lines[q]));
+        contents.push(formatter('../../' + paths.base.bower + '/' + lines[q]));
       }
     }
 
@@ -218,6 +218,8 @@ gulp.task('bower:copy', function(cb) {
       for (var q = 0; q < src.length; q++) {
         src[q] = paths.base.bower + '/' + src[q];
       }
+
+      if (lib.srcopts && lib.srcopts.base) lib.srcopts.base = paths.base.bower + '/' + lib.srcopts.base;
 
       return gulp.src(src).pipe($.newer(lib.dest)).pipe(gulp.dest(lib.dest));
     };})(key));
