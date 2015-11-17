@@ -11,7 +11,11 @@ var gulp   = require('gulp'),
 // GLOBAL OPTIONS //
 ////////////////////
 var options = {
-  production: false
+  production: false,
+  bs: {
+    domain: 'localhost',
+    public_root: ''
+  }
 };
 
 ////////////////
@@ -31,14 +35,43 @@ var paths = {
 };
 
 (function() {
-  var knownOptions = {
-    string:  'env',
-    default: {env: process.env.NODE_ENV || 'local'}
-  };
+  var cli_args = require('nopt')({
+    env: String,
+    domain: String,
+    production: Boolean
+  }, {
+    d: '--domain'
+  });
 
-  var cli_args = require('minimist')(process.argv.slice(2), knownOptions);
+  options.production = cli_args.env === 'production' || cli_args.production;
+  options.bs.domain = cli_args.domain || options.bs.domain;
 
-  options.production = cli_args.env === 'production';
+  var root_path = '', dir = __dirname;
+  while (dir.length) {
+    if (fs.existsSync(dir + '/Vagrantfile')) {
+      break;
+    }
+
+    var i = dir.lastIndexOf('/');
+    root_path = dir.substring(i + 1) + '/' + root_path;
+    dir = dir.substring(0, i);
+  }
+
+  if (__dirname + '/' == '/' + root_path) {
+    root_path = '';
+  } else {
+    root_path = root_path.substring(0, root_path.length - 1);
+  }
+
+  if (cli_args.domain === '') {
+    options.bs.domain = root_path.split('/').reverse().join('.') + '.dev';
+  }
+
+  if (fs.existsSync('public') && fs.statSync('public').isDirectory()) {
+    root_path += '/public';
+  }
+
+  options.bs.public_root = root_path;
 
   if (fs.existsSync('.bowerrc')) {
     paths.base.bower = require('./.bowerrc').directory || paths.base.bower;
@@ -501,4 +534,25 @@ gulp.task('watch', ['default'], function() {
   gulp.watch(paths.base.src + '/**/*.js', ['js']);
   gulp.watch(paths.base.src + '/**/*.scss', ['css']);
   gulp.watch(paths.base.src + '/**/*.{png,jpg,jpeg,gif,svg}', ['img']);
+});
+
+gulp.task('serve', ['watch'], function () {
+  bs.init({
+    ui: { port: 8000 },
+    port: 8888,
+    reloadDebounce: 1000,
+    open: false,
+    files: [
+      paths.base.dest.main + '/**/*.js',
+      paths.base.dest.main + '/**/*.css',
+      paths.base.dest.main + '/**/*.{png,jpg,jpeg,gif,svg}'
+    ],
+    proxy: {
+      target: 'http://' + options.bs.domain + ':8080/' + options.bs.public_root + '/'
+    }
+  });
+
+  gulp.watch(['app/**', 'resources/lang/**', 'resources/views/**']).on('change', function () {
+    bs.reload();
+  });
 });
