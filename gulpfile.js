@@ -15,7 +15,8 @@ var options = {
   production: false,
   bs: {
     domain: 'localhost',
-    public_root: ''
+    public_root: '',
+    open: false
   }
 };
 
@@ -39,13 +40,16 @@ var paths = {
   var cli_args = require('nopt')({
     env: String,
     domain: String,
-    production: Boolean
+    production: Boolean,
+    open: Boolean
   }, {
-    d: '--domain'
+    d: '--domain',
+    o: '--open'
   });
 
   options.production = cli_args.env === 'production' || cli_args.production;
   options.bs.domain = cli_args.domain || options.bs.domain;
+  options.bs.open = !!cli_args.open;
 
   var root_path = '', dir = __dirname;
   while (dir.length) {
@@ -538,11 +542,21 @@ gulp.task('watch', ['default'], function() {
 });
 
 gulp.task('serve', ['watch'], function () {
+  if (options.bs.domain != 'localhost') {
+    // this is kinda hacky and uses browsersync's internal functionality. may break. consult val.
+    bs.instance.events.on('options:set', function (event) {
+      if (event.path == 'urls' && event.value.get('local').match(/^https?:\/\/localhost(:|\/)/i)) {
+        bs.instance.setOptionIn(['urls', 'local'], event.value.get('local').replace('//localhost', '//' + options.bs.domain));
+        bs.instance.setOptionIn(['urls', 'ui'], event.value.get('ui').replace('//localhost', '//' + options.bs.domain));
+      }
+    });
+  }
+
   bs.init({
     ui: { port: 8000 },
     port: 8888,
     reloadDebounce: 1000,
-    open: false,
+    open: options.bs.open ? 'ui' : false,
     files: [
       paths.base.dest.main + '/**/*.js',
       paths.base.dest.main + '/**/*.css',

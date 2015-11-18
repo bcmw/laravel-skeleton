@@ -5,7 +5,7 @@
 
 # compiled by gulp
 /.tmp
-/resources/assets/build/*
+/resources/build/*
 /resources/views/_assets/*
 /public/assets/*
 !/public/assets/.htaccess
