@@ -37,6 +37,7 @@ storage/testing.sqlite
 Homestead.yaml
 Homestead.json
 storage/framework/schedule-*
+storage/clockwork/*
 
 # env stuff
 /.env
