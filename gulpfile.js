@@ -6,7 +6,8 @@ var gulp   = require('gulp'),
     notify = require('gulp-notify'),
     run    = require('run-sequence'),
     fs     = require('fs'),
-    bs     = require('browser-sync').create();
+    bs     = require('browser-sync').create(),
+    revDel = require('rev-del');
 
 ////////////////////
 // GLOBAL OPTIONS //
@@ -361,7 +362,7 @@ gulp.task('sass:critical', function() {
 /**
  * Compiles async sass stylesheets
  */
-gulp.task('sass:main', function() {
+gulp.task('sass:main', ['sass:clean_sourcemaps'], function() {
   return gulp.src(paths.src.sass.main, {base: paths.base.src})
       .pipe($.sourcemaps.init())
       .pipe($.sass({
@@ -372,13 +373,21 @@ gulp.task('sass:main', function() {
         path.dirname = path.dirname.replace(/(\/|^)sass(\/|$)/, '/css/').replace(/(\/|^)main(\/|$)/, '/');
         path.extname = '.min.css';
       }))
+      .pipe($.rev())
       .pipe($.if(!options.production, $.sourcemaps.write('.', {
         sourceRoot: function(file) {
           return file.path.replace(/^resources/, '').substr(1).replace(/[^\/]+/ig, '..') + '/../resources/';
         }
       })))
       .pipe(gulp.dest(paths.base.dest.main))
-      .pipe($.size({title: 'main css'}));
+      .pipe($.size({title: 'main css'}))
+      .pipe($.rev.manifest({ merge: true, path: 'storage/app/asset-manifest.json', base: 'storage/app' }))
+      .pipe(revDel({ dest: paths.base.dest.main, oldManifest: 'storage/app/asset-manifest.json' }))
+      .pipe(gulp.dest('storage/app'));
+});
+
+gulp.task('sass:clean_sourcemaps', function() {
+  $.if(!options.production, del(paths.base.dest.main + '/*/*.map'));
 });
 
 /**
@@ -415,13 +424,17 @@ gulp.task('js:main', function() {
         path.dirname = path.dirname.replace(/(\/|^)main(\/|$)/, '/');
         path.extname = '.min.js';
       }))
+      .pipe($.rev())
       .pipe($.if(!options.production, $.sourcemaps.write('.', {
         sourceRoot: function(file) {
           return file.path.replace(/^resources/, '').substr(1).replace(/[^\/]+/ig, '..') + '/../resources/';
         }
       })))
       .pipe(gulp.dest(paths.base.dest.main))
-      .pipe($.size({title: 'main js'}));
+      .pipe($.size({title: 'main js'}))
+      .pipe($.rev.manifest({ merge: true, path: 'storage/app/asset-manifest.json', base: 'storage/app' }))
+      .pipe(revDel({ dest: paths.base.dest.main, oldManifest: 'storage/app/asset-manifest.json' }))
+      .pipe(gulp.dest('storage/app'));
 });
 
 /**

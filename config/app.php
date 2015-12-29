@@ -154,6 +154,8 @@ return [
         App\Providers\ValidatorServiceProvider::class,
         App\Providers\ViewComposerServiceProvider::class,
 
+        App\Providers\RoutingServiceProvider::class,
+
     ],
 
     /*
