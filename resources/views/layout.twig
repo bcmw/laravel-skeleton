@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="{{ viewport | default('width=device-width, initial-scale=1.0, minimal-ui') }}" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="{{ viewport | default('width=device-width, initial-scale=1.0, minimal-ui') }}">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="base-url" content="{{ url('/') }}">
 
   {% block meta %}
 
@@ -16,25 +17,25 @@
     } %}
 
     <title>{{ default_meta.title }}</title>
-    <meta name="og:title" content="{{ meta.title.og | default(default_meta.title) }}" />
-    <meta name="twitter:title" content="{{ meta.title.twitter | default(default_meta.title) }}" />
+    <meta name="og:title" content="{{ meta.title.og | default(default_meta.title) }}">
+    <meta name="twitter:title" content="{{ meta.title.twitter | default(default_meta.title) }}">
 
-    <meta name="description" content="{{ default_meta.description }}" />
-    <meta name="og:description" content="{{ meta.description.og | default(default_meta.description) }}" />
-    <meta name="twitter:description" content="{{ meta.description.twitter | default(default_meta.description) }}" />
+    <meta name="description" content="{{ default_meta.description }}">
+    <meta name="og:description" content="{{ meta.description.og | default(default_meta.description) }}">
+    <meta name="twitter:description" content="{{ meta.description.twitter | default(default_meta.description) }}">
 
     {% if default_meta.image is not empty %}
-      <meta name="og:image" content="{{ meta.image.og | default(default_meta.image) }}" />
-      <meta name="twitter:image:src" content="{{ meta.image.twitter | default(default_meta.image) }}" />
+      <meta name="og:image" content="{{ meta.image.og | default(default_meta.image) }}">
+      <meta name="twitter:image:src" content="{{ meta.image.twitter | default(default_meta.image) }}">
     {% endif %}
 
     {% if default_meta.keywords is not empty %}
-      <meta name="keywords" content="{{ default_meta.keywords }}" />
+      <meta name="keywords" content="{{ default_meta.keywords }}">
     {% endif %}
 
     {% if canonical_url | default('') is not empty %}
-      <link rel="canonical" href="{{ canonical_url }}" />
-      <meta name="og:url" content="{{ canonical_url }}" />
+      <link rel="canonical" href="{{ canonical_url }}">
+      <meta name="og:url" content="{{ canonical_url }}">
     {% endif %}
 
   {% endblock %}
@@ -44,9 +45,9 @@
       <link rel="shortcut icon" href="{{ asset('favicon.png') }}">
     {% endif %}
     {% if asset_exists('favicon.ico') %}
-      <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
-      <link rel="shortcut icon" type="image/icon" href="{{ asset('favicon.ico') }}" />
-      <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+      <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+      <link rel="shortcut icon" type="image/icon" href="{{ asset('favicon.ico') }}">
+      <link rel="shortcut icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     {% endif %}
   {% endblock %}
 
@@ -55,10 +56,9 @@
     <link rel="stylesheet" href="data:text/css;base64,{% filter base64 %}
 
       {{ source('_assets.css.style_css', true) }}
-
       {% block critical_css %}{% endblock %}
 
-    {% endfilter %}" />
+    {% endfilter %}">
 
   {% endblock %}
 
@@ -66,17 +66,12 @@
   <script type="text/javascript"></script>
 
   {% block head_js %}{% endblock %}
-
-  {# assets loaded async below #}
-  {#<link rel="stylesheet" href="/css/style.min.css" />#}
-  {#<script type="text/javascript" src="/js/scripts.min.js"></script>#}
 </head>
 <body>
 
   {% block main %}{% endblock %}
 
   {% block js %}
-
     <script type="text/javascript">
       (function () {
         window.GTM_ID = {{ env('GTM_ID', false) | json_encode | raw }};
@@ -87,24 +82,23 @@
 
         loadCSS('{{ asset('assets/css/style.min.css') }}');
 
-        var loadMainJS = function() { loadJS('{{ asset('assets/js/scripts.min.js') }}'); };
+        var loadMainJS = function () {
+          loadJS('{{ asset('assets/js/scripts.min.js') }}');
+        };
         var jqe = loadJS('//cdnjs.cloudflare.com/ajax/libs/jquery/' + BowerComponents.jquery + '/jquery.min.js', loadMainJS);
-        jqe.onerror = function() {
+        jqe.onerror = function () {
           loadJS('{{ asset('assets/common/js/jquery/jquery.min.js') }}', loadMainJS);
         };
       })();
     </script>
-
   {% endblock %}
 
   <noscript>
-    <link rel="stylesheet" href="{{ asset('assets/css/style.min.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/css/noscript.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/css/style.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/noscript.min.css') }}">
 
     {% if env('GTM_ID') %}
-
       <iframe src="//www.googletagmanager.com/ns.html?id={{ env('GTM_ID') }}" height="0" width="0" style="display:none;visibility:hidden"></iframe>
-
     {% endif %}
 
   </noscript>
