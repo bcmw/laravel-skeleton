@@ -87,12 +87,12 @@ var paths = {
   // SOURCE PATHS //
   //////////////////
   paths.src = {
-    sass: {
+    scss: {
       critical: [
-        paths.base.src + '/sass/critical/**/*.scss'
+        paths.base.src + '/scss/critical/**/*.scss'
       ],
       main:     [
-        paths.base.src + '/sass/main/**/*.scss'
+        paths.base.src + '/scss/main/**/*.scss'
       ]
     },
     js:   {
@@ -120,7 +120,7 @@ var paths = {
   // BOWER LIB PATHS //
   /////////////////////
   paths.bower = {
-    sass: {
+    scss: {
       base: [
         'bourbon/app/assets/stylesheets/bourbon',
         'neat/app/assets/stylesheets/neat'
@@ -149,8 +149,8 @@ var paths = {
   };
 
   // ignore partials
-  paths.src.sass.critical.push('!**/_*.scss');
-  paths.src.sass.main.push('!**/_*.scss');
+  paths.src.scss.critical.push('!**/_*.scss');
+  paths.src.scss.main.push('!**/_*.scss');
   paths.src.js.critical.push('!**/_*.js');
   paths.src.js.main.push('!**/_*.js');
 })();
@@ -271,23 +271,23 @@ gulp.task('bower:copy', function(cb) {
 });
 
 /**
- * Creates the bower import files for sass
+ * Creates the bower import files for scss
  *
  * Creates resources/build/_bower_XXX.scss
  */
-gulp.task('bower:sass', function(cb) {
+gulp.task('bower:scss', function(cb) {
   var tasks = [];
 
-  for (var key in paths.bower.sass) {
-    if (!paths.bower.sass.hasOwnProperty(key)) continue;
+  for (var key in paths.bower.scss) {
+    if (!paths.bower.scss.hasOwnProperty(key)) continue;
 
-    gulp.task('bower:sass:' + key, (function (key) { return function () {
-      utils.makeBowerBuildFile(key, 'scss', paths.bower.sass[key], function (path) {
+    gulp.task('bower:scss:' + key, (function (key) { return function () {
+      utils.makeBowerBuildFile(key, 'scss', paths.bower.scss[key], function (path) {
         return '@import "' + path + '";';
       });
     };})(key));
 
-    tasks.push('bower:sass:' + key);
+    tasks.push('bower:scss:' + key);
   }
 
   if (tasks.length) run(tasks, cb);
@@ -330,9 +330,9 @@ gulp.task('bower:versions', function() {
 });
 
 /**
- * Copies .css files to .scss files in bower components so they can be imported in sass
+ * Copies .css files to .scss files in bower components so they can be imported in scss
  */
-gulp.task('bower:sass:css_to_scss', function() {
+gulp.task('bower:scss:css_to_scss', function() {
   return gulp.src([paths.base.bower + '/**/*.css', '!' + paths.base.bower + '/**/*.min.css'], {base: paths.base.bower})
       .pipe($.newer({dest: paths.base.bower, ext: '.scss'}))
       .pipe($.rename({extname: '.scss'}))
@@ -340,18 +340,18 @@ gulp.task('bower:sass:css_to_scss', function() {
 });
 
 /**
- * Compiles critical sass stylesheets
+ * Compiles critical scss stylesheets
  */
-gulp.task('sass:critical', function() {
-  return gulp.src(paths.src.sass.critical, {base: paths.base.src})
+gulp.task('scss:critical', function() {
+  return gulp.src(paths.src.scss.critical, {base: paths.base.src})
       .pipe($.sourcemaps.init())
       .pipe($.sass({
         outputStyle: options.production ? 'compressed' : 'nested'
       }))
-      .on('error', utils.errorCallback('SASS'))
+      .on('error', utils.errorCallback('SCSS'))
       .pipe($.if(!options.production, $.sourcemaps.write({sourceRoot: '/' + paths.base.src})))
       .pipe($.rename(function (path) {
-        path.dirname = path.dirname.replace(/(\/|^)sass(\/|$)/, '/css/').replace(/(\/|^)critical(\/|$)/, '/');
+        path.dirname = path.dirname.replace(/(\/|^)scss(\/|$)/, '/css/').replace(/(\/|^)critical(\/|$)/, '/');
         path.basename += '_css';
         path.extname = '.twig';
       }))
@@ -360,17 +360,17 @@ gulp.task('sass:critical', function() {
 });
 
 /**
- * Compiles async sass stylesheets
+ * Compiles async scss stylesheets
  */
-gulp.task('sass:main', ['sass:clean_sourcemaps'], function() {
-  return gulp.src(paths.src.sass.main, {base: paths.base.src})
+gulp.task('scss:main', ['scss:clean_sourcemaps'], function() {
+  return gulp.src(paths.src.scss.main, {base: paths.base.src})
       .pipe($.sourcemaps.init())
       .pipe($.sass({
         outputStyle: options.production ? 'compressed' : 'nested'
       }))
-      .on('error', utils.errorCallback('SASS'))
+      .on('error', utils.errorCallback('SCSS'))
       .pipe($.rename(function (path) {
-        path.dirname = path.dirname.replace(/(\/|^)sass(\/|$)/, '/css/').replace(/(\/|^)main(\/|$)/, '/');
+        path.dirname = path.dirname.replace(/(\/|^)scss(\/|$)/, '/css/').replace(/(\/|^)main(\/|$)/, '/');
         path.extname = '.min.css';
       }))
       .pipe($.rev())
@@ -386,7 +386,7 @@ gulp.task('sass:main', ['sass:clean_sourcemaps'], function() {
       .pipe(gulp.dest('storage/app'));
 });
 
-gulp.task('sass:clean_sourcemaps', function() {
+gulp.task('scss:clean_sourcemaps', function() {
   $.if(!options.production, del(paths.base.dest.main + '/*/*.map'));
 });
 
@@ -492,8 +492,8 @@ gulp.task('img', function() {
 /**
  * Compiles all CSS (critical and async)
  */
-gulp.task('css', ['bower:sass', 'bower:sass:css_to_scss'], function(cb) {
-  run(['sass:critical', 'sass:main'], cb);
+gulp.task('css', ['bower:scss', 'bower:scss:css_to_scss'], function(cb) {
+  run(['scss:critical', 'scss:main'], cb);
 });
 
 /**
