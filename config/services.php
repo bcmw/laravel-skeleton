@@ -30,9 +30,13 @@ return [
     ],
 
     'stripe' => [
-        'model'  => App\User::class,
+        'model'  => App\Models\User::class,
         'key'    => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
+    ],
+
+    'cask' => [
+        'token' => env('CASK_LOG_TOKEN'),
     ],
 
 ];
