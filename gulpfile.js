@@ -362,7 +362,7 @@ gulp.task('scss:critical', function() {
 /**
  * Compiles async scss stylesheets
  */
-gulp.task('scss:main', ['scss:clean_sourcemaps'], function() {
+gulp.task('scss:main', ['clean:sourcemaps:scss'], function() {
   return gulp.src(paths.src.scss.main, {base: paths.base.src})
       .pipe($.sourcemaps.init())
       .pipe($.sass({
@@ -386,8 +386,8 @@ gulp.task('scss:main', ['scss:clean_sourcemaps'], function() {
       .pipe(gulp.dest('storage/app'));
 });
 
-gulp.task('scss:clean_sourcemaps', function() {
-  $.if(!options.production, del(paths.base.dest.main + '/*/*.map'));
+gulp.task('clean:sourcemaps:scss', function() {
+  return del(paths.base.dest.main + '/css/**/*.map')
 });
 
 /**
@@ -395,7 +395,7 @@ gulp.task('scss:clean_sourcemaps', function() {
  */
 gulp.task('js:critical', function() {
   return gulp.src(paths.src.js.critical, {base: paths.base.src})
-      .pipe($.cache($.include()))
+      .pipe($.include())
       .pipe($.cache($.uglify({
         mangle: !!options.production
       })))
@@ -412,10 +412,10 @@ gulp.task('js:critical', function() {
 /**
  * Compiles async js scripts
  */
-gulp.task('js:main', function() {
+gulp.task('js:main', ['clean:sourcemaps:js'], function() {
   return gulp.src(paths.src.js.main, {base: paths.base.src})
       .pipe($.sourcemaps.init())
-      .pipe($.cache($.include()))
+      .pipe($.include())
       .pipe($.cache($.uglify({
         mangle: !!options.production
       })))
@@ -435,6 +435,10 @@ gulp.task('js:main', function() {
       .pipe($.rev.manifest({ merge: true, path: 'storage/app/asset-manifest.json', base: 'storage/app' }))
       .pipe(revDel({ dest: paths.base.dest.main, oldManifest: 'storage/app/asset-manifest.json' }))
       .pipe(gulp.dest('storage/app'));
+});
+
+gulp.task('clean:sourcemaps:js', function() {
+  return del(paths.base.dest.main + '/js/**/*.map')
 });
 
 /**
@@ -549,8 +553,8 @@ gulp.task('default', options.production ? ['clean'] : [], function(cb) {
 });
 
 gulp.task('watch', ['default'], function() {
-  gulp.watch(paths.base.src + '/**/*.js', ['js']);
-  gulp.watch(paths.base.src + '/**/*.scss', ['css']);
+  gulp.watch([paths.base.src + '/**/*.js', '!' + paths.base.build + '/**'], ['js']);
+  gulp.watch([paths.base.src + '/**/*.scss', '!' + paths.base.build + '/**'], ['css']);
   gulp.watch(paths.base.src + '/**/*.{png,jpg,jpeg,gif,svg}', ['img']);
 });
 
