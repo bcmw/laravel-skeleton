@@ -154,6 +154,7 @@ return [
         TwigBridge\ServiceProvider::class,
         Bluechip\Twig\Support\Laravel\TwigHelpersServiceProvider::class,
         Bluechip\Laravel\Providers\LaravelHelpersServiceProvider::class,
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
         /*
          * Application Service Providers...
