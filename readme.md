@@ -1,6 +1,6 @@
 ## Blue Chip Laravel Skeleton Project
 
-Laravel 5.1 Skeleton
+Laravel 5.2 Skeleton
 
 ### Installation
 ```
