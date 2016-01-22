@@ -35,6 +35,10 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
+    'google' => [
+        'gtm_id' => env('GTM_ID'),
+    ],
+
     'cask' => [
         'token' => env('CASK_LOG_TOKEN'),
     ],

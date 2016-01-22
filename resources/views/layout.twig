@@ -74,7 +74,7 @@
   {% block js %}
     <script type="text/javascript">
       (function () {
-        window.GTM_ID = {{ env('GTM_ID', false) | json_encode | raw }};
+        window.GTM_ID = {{ config_get('services.google.gtm_id', false) | json_encode | raw }};
 
         {{ source('_assets.js.scripts_js', true) }}
 
@@ -97,8 +97,8 @@
     <link rel="stylesheet" href="{{ asset('assets/css/style.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/noscript.min.css') }}">
 
-    {% if env('GTM_ID') %}
-      <iframe src="//www.googletagmanager.com/ns.html?id={{ env('GTM_ID') }}" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    {% if config_get('services.google.gtm_id') %}
+      <iframe src="//www.googletagmanager.com/ns.html?id={{ config_get('services.google.gtm_id') }}" height="0" width="0" style="display:none;visibility:hidden"></iframe>
     {% endif %}
 
   </noscript>
