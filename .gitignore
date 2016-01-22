@@ -1,16 +1,16 @@
 # 3rd party stuff
-/vendor/
-/node_modules/
-/bower_components/
+/vendor
+/node_modules
+/bower_components
 
-# compiled by gulp
+# Compiled by Gulp
 /.tmp
-/resources/build/*
+/resources/assets/build/*
 /resources/views/_assets/*
 /public/assets/*
 !/public/assets/.htaccess
 
-# misc files
+# Misc files
 /.sass-cache
 /SOURCE
 /.vagrant
@@ -37,10 +37,6 @@ storage/testing.sqlite
 Homestead.yaml
 Homestead.json
 storage/framework/schedule-*
-storage/clockwork/*
 
-# env stuff
+# Dotenv stuff
 /.env
-
-/vendor
-/node_modules

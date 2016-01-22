@@ -151,10 +151,8 @@ return [
         /*
          * 3rd Party Service Providers...
          */
-        TwigBridge\ServiceProvider::class,
         Bluechip\Twig\Support\Laravel\TwigHelpersServiceProvider::class,
         Bluechip\Laravel\Providers\LaravelHelpersServiceProvider::class,
-        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -165,8 +163,6 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\ValidatorServiceProvider::class,
         App\Providers\ViewComposerServiceProvider::class,
-
-        App\Providers\RoutingServiceProvider::class,
 
     ],
 
@@ -213,8 +209,6 @@ return [
         'URL'       => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View'      => Illuminate\Support\Facades\View::class,
-
-        'Twig'      => TwigBridge\Facade\Twig::class,
 
     ],
 
